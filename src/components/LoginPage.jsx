@@ -1,42 +1,34 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
+import React, { useContext, useState } from 'react'
+import AuthContext from '../context/auth/AuthContext'
 /**
  * LoginPage Component
  * - Renders a login form with username and password inputs
  * - On submit, posts to /login, stores tokens, and redirects to home
  */
 export default function LoginPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+
+  const context = useContext(AuthContext)
+  const { loginToAccount, loading} = context;
+
+  const [credentials, setCredentials] = useState({ "username": "", "password": "" });
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
-    setLoading(true);
-    try {
-      const res = await fetch('https://tnp-recruitment-challenge.manitvig.live/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-      if (!res.ok) {
-        const msg = await res.text();
-        throw new Error(msg || 'Login failed');
-      }
-      const { accessToken, refreshToken } = await res.json();
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-      navigate('/');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    try 
+    {
+      await loginToAccount(credentials)
     }
+    catch (err)
+    {
+      setError(err.message);
+    } 
   }
+  const handleOnChange = (e) => {
+    setCredentials({ ...credentials, [e.target.name]: e.target.value })
+}
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
@@ -52,9 +44,11 @@ export default function LoginPage() {
           </label>
           <input
             type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+              name = "username"
+            value={credentials.username}
+            onChange={handleOnChange}
             required
+              autoComplete="username"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
@@ -64,9 +58,11 @@ export default function LoginPage() {
           </label>
           <input
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name = "password"
+            value={credentials.password}
+            onChange={handleOnChange}
             required
+            autoComplete="current-password"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
@@ -74,7 +70,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50 cursor-pointer"
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
