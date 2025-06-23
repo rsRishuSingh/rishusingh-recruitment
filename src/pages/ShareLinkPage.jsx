@@ -39,10 +39,10 @@ export default function ShareLinkPage() {
 
       {link && (
         <div className="mt-6 w-full max-w-lg bg-gray-100 p-4 rounded-lg flex items-center justify-between">
-          <span className='break-all text-sm text-gray-800 '>{link}</span>
+          <span className=' w-3/4 break-all text-sm text-gray-800 '>{link}</span>
           <button id='copyBotton'
             onClick={handleCopy}
-            className={`ml-4 px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 ${copyText === 'Copied' ? 'font-bold' : 'font-normal'}`}
+            className={` w-20 m-4 px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 ${copyText === 'Copied' ? 'font-bold' : 'font-normal'}`}
           >
     {copyText}
           </button>

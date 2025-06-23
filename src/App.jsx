@@ -1,9 +1,9 @@
-import { Routes, Route, Navigate, BrowserRouter } from 'react-router-dom';
-
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import AuthProvider from './context/auth/AuthProvider';
 
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
+import Modal from './components/Modal';
 
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -11,6 +11,7 @@ import ShareLinkPage from './pages/ShareLinkPage';
 import StudentDetailPage from './pages/StudentDetailPage';
 
 export default function App() {
+
   return (
 
 
@@ -20,6 +21,8 @@ export default function App() {
 
       <Navbar />
       
+        <Modal/>
+     
       <Routes>
 
         {/* Public login page */}

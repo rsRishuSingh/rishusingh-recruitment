@@ -14,14 +14,14 @@ export default function AuthProvider(props) {
     const [filter, setFilter] = useState('');
     const [loading, setLoading] = useState(false);
     const [alert, setAlert] = useState(null);
-    const [link, setLink] = useState("");
+    const [link, setLink] = useState(null);
 
     const showAlert = ({ type, message, description }) => {
         setAlert({ type, message, description });
         console.log("Alert Called")
         setTimeout(() => {
             setAlert(null);
-        }, 1500);
+        }, 2000);
     };
 
     const check_session_validity = () => {
@@ -35,7 +35,7 @@ export default function AuthProvider(props) {
         const refreshToken = stored?.token;
 
         if (!refreshToken) {
-            showAlert({ type: "Logging Out", message: "Session Expired", description: "Please Login Again!" });
+            showAlert({ type: "warning", message: "Session Expired", description: "Please Login Again!" });
             logout();
             return;
         }
@@ -56,10 +56,10 @@ export default function AuthProvider(props) {
             const expiry = latestToken.expiry;
 
             if (expiry - Date.now() <= 5 * 60 * 1000) {
-                showAlert({ type: "Last Session", message: "Session expiring in 5 minutes", description: "Please Login Again!" });
+                showAlert({ type: "warning", message: "Session expiring in 5 minutes", description: "Please Login Again!" });
             }
         } catch {
-            showAlert({ type: "Logging Out", message: "Session Refresh Failed", description: "Please Login Again!" });
+            showAlert({ type: "error", message: "Session Refresh Failed", description: "Please Login Again!" });
             logout();
         }
     };
@@ -69,7 +69,10 @@ export default function AuthProvider(props) {
             clearInterval(refreshIntervalId);
             refreshIntervalId = null;
         }
-        localStorage.clear();
+        // localStorage.clear();
+        localStorage.removeItem("accessToken")
+        localStorage.removeItem("refreshToken")
+        localStorage.removeItem('user')
         navigate("/login");
     };
 
@@ -89,15 +92,18 @@ export default function AuthProvider(props) {
                 setWithExpiry("accessToken", data.accessToken, 15);
                 setWithExpiry("refreshToken", data.refreshToken, 60);
                 const user = username.charAt(0).toUpperCase() + username.slice(1); // capitalise first char
-                localStorage.setItem(user, username)
-                showAlert({ type: "Login", message: "Successfull", description: "Welcome to the Homepage" });
+                localStorage.setItem("user", username)
+                const shareTokenData = getWithExpiry()
+                const shareToken = data?.shareTokenData
+                setLink(shareToken)
+                showAlert({ type: "success", message: "Login Successfull", description: "Welcome to the Homepage" });
 
                 if (refreshIntervalId) clearInterval(refreshIntervalId);
                 refreshIntervalId = setInterval(doRefresh, 13 * MS_PER_MINUTE);
 
                 navigate("/");
             } else {
-                showAlert({ type: "Error in Login", message: "Login Failed", description: "Error Occured in Login" });
+                showAlert({ type: "error", message: "Login Failed", description: "Error Occured in Login" });
             }
         } catch (err) {
             console.log(err);
@@ -111,7 +117,7 @@ export default function AuthProvider(props) {
         setLoading(true);
         const accessToken = check_session_validity();
         if (!accessToken) {
-            showAlert({ type: "Authorization Error", message: "Access Token not found", description: "Please Login Again!" });
+            showAlert({ type: "error", message: "Access Token not found", description: "Please Login Again!" });
             return;
         }
 
@@ -125,18 +131,19 @@ export default function AuthProvider(props) {
             });
 
             if (!resp.ok) {
-                showAlert({ type: "Request Failed", message: "Link cannot be generated", description: "Please Try after sometime" });
+                showAlert({ type: "error", message: "Link cannot be generated", description: "Please Try Again!" });
                 throw new Error(await resp.text());
             }
 
             const { shareToken } = await resp.json();
             const origin = window.location.origin;
             const url = `${origin}/share?shareToken=${encodeURIComponent(shareToken)}`;
-            showAlert({ type: "Successfull", message: "Sharable Link generated", description: "Link validity 30 days" });
+            showAlert({ type: "success", message: "Sharable Link generated", description: "Link validity 30 days" });
+            setWithExpiry('shareToken', shareToken, 60*24*30)
             setLink(url);
         } catch (e) {
             console.error(e);
-            showAlert({ type: "Error Occurred", message: "Link cannot be generated", description: "Please Try after sometime" });
+            showAlert({ type: "error", message: "Link cannot be generated", description: "Please Try Again!" });
         }
         finally{
             setLoading(false)
@@ -144,8 +151,9 @@ export default function AuthProvider(props) {
     };
 
     const fetchAndSetStudentDetails = async (shareToken) => {
+        setLoading(true);
         if (!shareToken) {
-            showAlert({ type: "Authentication Error", message: "Share token not found", description: "Please Share Valid URL" });
+            showAlert({ type: "error", message: "Share token not found", description: "Please Enter Valid URL" });
             return;
         }
 
@@ -157,20 +165,23 @@ export default function AuthProvider(props) {
             });
 
             if (!resp.ok) {
-                showAlert({ type: "Request Failed", message: "Details cannot be Loaded", description: "Please Try Again" });
+                showAlert({ type: "error", message: "Details cannot be Loaded", description: "Please Try Again" });
                 throw new Error(await resp.text());
             }
 
             const data = await resp.json();
             showAlert({
-                type: "Successfull",
+                type: "success",
                 message: "Student Details Loaded",
                 description: "Student profile has been fetched."
             });
             setStudentDetails(data);
         } catch (err) {
             console.error(err);
-            showAlert({ type: "Error Occurred", message: "Details cannot be Loaded", description: "Please Try Again" });
+            showAlert({ type: "error", message: "Details cannot be Loaded", description: "Please Try Again" });
+        }
+        finally{
+            setLoading(false)
         }
     };
 

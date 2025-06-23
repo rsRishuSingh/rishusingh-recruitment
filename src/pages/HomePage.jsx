@@ -1,27 +1,36 @@
 import { useEffect, useContext } from 'react';
-import AuthContext from '../context/auth/AuthContext'
+import AuthContext from '../context/auth/AuthContext';
 import profileImage from '../assets/Profile_Photo.jpg';
+
 /**
  * HomePage Component
  * - Retrieves `username` and `role` from localStorage
  * - Displays them centered with a circular demo profile image
  */
 export default function HomePage() {
-  const username = localStorage.getItem('user')
+  const username = localStorage.getItem('user');
   const role = 'Admin';
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
-      <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-lg">
-        <img
-          src={profileImage}
-          alt="Profile"
-          className="w-32 h-32 rounded-full border-4 border-indigo-600 mb-4"
-        />
-        <h1 className="text-2xl font-semibold text-gray-800 mb-2">
-          Welcome, {username}!
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-100 via-purple-200 to-pink-300 p-4 sm:p-6 lg:p-12">
+      <div className="w-full max-w-sm sm:max-w-md md:max-w-lg bg-white bg-opacity-20 backdrop-blur-md rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-12 text-center">
+        <div className="inline-block p-1.5 sm:p-2 rounded-full bg-gradient-to-tr from-white/50 to-white/10 mb-6">
+          <img
+            src={profileImage}
+            alt="Profile"
+            className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-full ring-4 ring-white shadow-lg object-cover"
+          />
+        </div>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-black mb-3">
+          Welcome,{' '}
+          <span className="underline decoration-white/70">
+            {username}
+          </span>
+          !
         </h1>
-        <p className="text-gray-600">Role: <span className="font-medium">{role}</span></p>
+        <p className="text-black text-base sm:text-lg md:text-xl">
+          Role: <span className="font-semibold">{role}</span>
+        </p>
       </div>
     </div>
   );

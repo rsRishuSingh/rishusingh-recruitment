@@ -1,24 +1,42 @@
 import { useContext, useEffect, useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AuthContext from '../context/auth/AuthContext';
+import Spinner from '../components/Spinner'
+import { getWithExpiry } from '../utils/tokenStorage';
 
 export default function StudentDetailPage() {
   const {
     fetchAndSetStudentDetails,
     studentDetails,
     loading,
-    link,
   } = useContext(AuthContext);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('');
-
+  
+  let navigate = useNavigate();
   // grab shareToken from either current URL or context.link
   useEffect(() => {
-    let token = new URLSearchParams(window.location.search).get('shareToken');
-    if (!token && link) {
-      // create a URL object, then read its searchParams
-      const urlObj = new URL(link);
-      token = urlObj.searchParams.get('shareToken');
+    let token = new URLSearchParams(window.location.search).get('shareToken');// token in url
+
+    
+
+    if (!token) {
+      const data = getWithExpiry("shareToken");
+      const shareToken = data?.token;
+    
+      if (!shareToken) {
+        navigate("/sharelink");
+        return;  // prevent further execution
+      }
+    
+      token = shareToken;  // no need to rebuild URL or use URL object
+    
+      fetchAndSetStudentDetails(token).catch(err => {
+        console.error(err);
+        setError('Failed to load student details');
+      });
     }
+    
     if (token) {
       fetchAndSetStudentDetails(token).catch(err => {
         console.error(err);
@@ -38,9 +56,15 @@ export default function StudentDetailPage() {
 
   if (loading)
     return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-purple-600 to-pink-500">
-        <p className="text-white text-lg">Loading student data…</p>
-      </div>
+      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-purple-100 to-white">
+  <div className="flex items-center space-x-2">
+    <Spinner />
+    <p className="text-gray-800 text-lg">
+      Loading student data…
+    </p>
+  </div>
+</div>
+
     );
   if (error)
     return (
@@ -50,7 +74,8 @@ export default function StudentDetailPage() {
     );
 
   return (
-    <div className="min-h-screen p-6 bg-gradient-to-br from-purple-600 to-pink-500">
+  <div className="min-h-screen p-6 bg-gradient-to-br from-purple-100 to-white">
+
       <div className="max-w-4xl mx-auto space-y-4">
        <div className='text-center'>
        <input
@@ -58,7 +83,7 @@ export default function StudentDetailPage() {
           placeholder="Filter by email..."
           value={filter}
           onChange={e => setFilter(e.target.value)}
-          className="w-full max-w-sm px-4 py-2 rounded-4xl focus:outline-none focus:ring-2 focus:ring-white placeholder-gray-500 text-gray-800 bg-amber-50 "
+          className="w-full max-w-sm px-4 py-3 rounded-4xl focus:outline-none focus:ring-2 focus:ring-white placeholder-gray-500 text-gray-800 bg-purple-200 "
         />
        </div>
 
