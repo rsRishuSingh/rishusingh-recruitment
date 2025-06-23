@@ -5,7 +5,7 @@ A responsive React-based dashboard tailored for Training & Placement (TNP) teams
 ---
 
 ## 📸 Project Preview
-
+> **Note**: copied link will not work on deployment( Fixing it). However everything is working fine locally
 > **Live Demo**:[Vercel Deployment](https://rishusingh-recruitment.vercel.app/)
 
 > _preview here_  
