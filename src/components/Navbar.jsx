@@ -58,15 +58,7 @@ export default function Navbar() {
                 </Link>
               );
             })}
-
-            <button
-              onClick={handleAuthAction}
-              className="px-4 py-2 rounded-full text-lg font-medium text-white hover:bg-white/20 transition-colors"
-            >
-              {isLoggedIn ? 'Logout' : 'Login'}
-            </button>
-
-            <Link
+  <Link
               to={link || '#'}
               className={`px-4 py-2 rounded-full text-lg font-medium transition-colors ${
                 link
@@ -77,6 +69,14 @@ export default function Navbar() {
             >
               Student Details
             </Link>
+            <button
+              onClick={handleAuthAction}
+              className="px-4 py-2 rounded-full text-lg font-medium text-white hover:bg-white/20 transition-colors"
+            >
+              {isLoggedIn ? 'Logout' : 'Login'}
+            </button>
+
+          
           </div>
 
           {/* Mobile Menu Button */}
@@ -111,15 +111,7 @@ export default function Navbar() {
                 </Link>
               );
             })}
-
-            <button
-              onClick={handleAuthAction}
-              className="block w-full text-left px-4 py-2 rounded-full text-base font-medium text-gray-800 hover:bg-indigo-50 transition-colors"
-            >
-              {isLoggedIn ? 'Logout' : 'Login'}
-            </button>
-
-            <Link
+<Link
               to={link || '#'}
               className={`block px-4 py-2 rounded-full text-base font-medium transition-colors ${
                 link
@@ -130,6 +122,14 @@ export default function Navbar() {
             >
               Student Details
             </Link>
+            <button
+              onClick={handleAuthAction}
+              className="block w-full text-left px-4 py-2 rounded-full text-base font-medium text-gray-800 hover:bg-indigo-50 transition-colors"
+            >
+              {isLoggedIn ? 'Logout' : 'Login'}
+            </button>
+
+            
           </div>
         </div>
       )}
