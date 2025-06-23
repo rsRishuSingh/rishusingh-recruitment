@@ -72,6 +72,7 @@ export default function AuthProvider(props) {
         // localStorage.clear();
         localStorage.removeItem("accessToken")
         localStorage.removeItem("refreshToken")
+        localStorage.removeItem('shareToken')
         localStorage.removeItem('user')
         navigate("/login");
     };
