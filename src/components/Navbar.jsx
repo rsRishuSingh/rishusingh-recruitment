@@ -4,20 +4,31 @@ import { useContext, useState } from 'react';
 import AuthContext from '../context/auth/AuthContext';
 import { getWithExpiry } from '../utils/tokenStorage';
 
+/**
+ * Navbar Component
+ * - Displays responsive navigation with active-state highlighting
+ * - Mobile menu overlays content without shifting layout
+ */
 export default function Navbar() {
+  // Auth and routing hooks
   const { check_session_validity, logout, showAlert } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen] = useState(false);
+
+  // Retrieve shareToken if present
   const data = getWithExpiry('shareToken');
   const link = data?.token;
 
+  // Navigation links
   const navLinks = [
     { name: 'Home', to: '/' },
     { name: 'Generate Link', to: '/sharelink' },
   ];
 
   const isLoggedIn = Boolean(check_session_validity());
+
+  // Handle login/logout action
   const handleAuthAction = () => {
     if (isLoggedIn) {
       logout();
@@ -35,6 +46,7 @@ export default function Navbar() {
     <nav className="relative bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
+
           {/* Logo */}
           <Link to="/" className="text-3xl font-extrabold text-white">
             TNP Dev
@@ -58,7 +70,9 @@ export default function Navbar() {
                 </Link>
               );
             })}
-  <Link
+
+            {/* Student Details link, disabled if no token */}
+            <Link
               to={link || '#'}
               className={`px-4 py-2 rounded-full text-lg font-medium transition-colors ${
                 link
@@ -69,14 +83,14 @@ export default function Navbar() {
             >
               Student Details
             </Link>
+
+            {/* Login/Logout button */}
             <button
               onClick={handleAuthAction}
               className="px-4 py-2 rounded-full text-lg font-medium text-white hover:bg-white/20 transition-colors"
             >
               {isLoggedIn ? 'Logout' : 'Login'}
             </button>
-
-          
           </div>
 
           {/* Mobile Menu Button */}
@@ -111,7 +125,9 @@ export default function Navbar() {
                 </Link>
               );
             })}
-<Link
+
+            {/* Mobile Student Details */}
+            <Link
               to={link || '#'}
               className={`block px-4 py-2 rounded-full text-base font-medium transition-colors ${
                 link
@@ -122,14 +138,14 @@ export default function Navbar() {
             >
               Student Details
             </Link>
+
+            {/* Mobile Login/Logout */}
             <button
               onClick={handleAuthAction}
               className="block w-full text-left px-4 py-2 rounded-full text-base font-medium text-gray-800 hover:bg-indigo-50 transition-colors"
             >
               {isLoggedIn ? 'Logout' : 'Login'}
             </button>
-
-            
           </div>
         </div>
       )}

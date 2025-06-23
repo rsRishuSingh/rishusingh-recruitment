@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect } from 'react';
 import AuthContext from '../context/auth/AuthContext';
 
+// Styles for different alert types
 const TYPE_STYLES = {
   success: 'bg-green-100 border-green-500 text-green-700',
   error: 'bg-red-100 border-red-500 text-red-700',
@@ -9,44 +10,45 @@ const TYPE_STYLES = {
 };
 
 /**
- * Dismissable Animated Notification Modal
- * Slides down on appear, slides up on dismiss.
+ * Modal Component
+ * - Displays dismissable, animated notifications
+ * - Slides down when appearing and slides up on dismissal
  */
 export default function Modal() {
   const { alert, setAlert } = useContext(AuthContext);
   const [visible, setVisible] = useState(false);
 
-  // Always run hooks before conditional return
+  // Show modal when `alert` becomes non-null
   useEffect(() => {
     if (alert) {
       setVisible(true);
     }
   }, [alert]);
 
+  // If there's no alert data, render nothing
   if (!alert) return null;
 
   const { type, message, description } = alert;
   const style = TYPE_STYLES[type] || TYPE_STYLES.info;
 
-  // Handle manual dismissal
+  // Close handler with animation delay
   const handleClose = () => {
     setVisible(false);
-    // wait for exit animation to complete before clearing context
-    setTimeout(() => setAlert(null), 1000);
+    setTimeout(() => setAlert(null), 300); // wait for slide-up
   };
 
   return (
     <div className="fixed inset-0 flex items-start justify-center z-50 pointer-events-none">
-      {/* overlay */}
+      {/* Semi-transparent backdrop */}
       <div
         className="absolute inset-0 bg-black opacity-30"
         onClick={handleClose}
-      ></div>
+      />
 
-      {/* modal container */}
+      {/* Notification panel */}
       <div
-        className={`pointer-events-auto mt-20 max-w-sm w-full p-4 border-l-4 rounded-lg shadow-lg transform transition-all duration-300 ease-out
-          ${style}
+        className={`pointer-events-auto mt-20 max-w-sm w-full p-4 border-l-4 rounded-lg shadow-lg transform transition-all duration-300 ease-out \
+          ${style} \
           ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}
       >
         <div className="flex justify-between items-start">
@@ -56,10 +58,9 @@ export default function Modal() {
           </div>
           <button
             onClick={handleClose}
-            className="text-gray-500 hover:text-gray-700 ml-4 focus:outline-none cursor-pointer"
+            className= "cursor-pointer text-gray-500 hover:text-gray-700 ml-4 focus:outline-none"
           >
-       <span role="img" aria-label="cross">✖</span>
-
+            <span role="img" aria-label="close">✖</span>
           </button>
         </div>
       </div>

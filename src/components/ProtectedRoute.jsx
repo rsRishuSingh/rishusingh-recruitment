@@ -5,7 +5,7 @@ import { useContext } from 'react'
 import AuthContext from '../context/auth/AuthContext'
 
 const ProtectedRoute = ({ children }) => {
-  // you can replace this with your own auth logic or context hook
+
   
   const context = useContext(AuthContext)
   const { check_session_validity} = context;
