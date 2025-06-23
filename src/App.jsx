@@ -1,12 +1,14 @@
-// src/App.jsx
 import { Routes, Route, Navigate, BrowserRouter } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import LoginPage from './components/LoginPage';
-import ShareLinkPage from './components/ShareLinkPage';
-import ProtectedRoute from './components/ProtectedRoute';
+
 import AuthProvider from './context/auth/AuthProvider';
-import HomePage from './components/HomePage';
-import StudentDetailPage from './components/StudentDetailPage';
+
+import Navbar from './components/Navbar';
+import ProtectedRoute from './components/ProtectedRoute';
+
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import ShareLinkPage from './pages/ShareLinkPage';
+import StudentDetailPage from './pages/StudentDetailPage';
 
 export default function App() {
   return (
