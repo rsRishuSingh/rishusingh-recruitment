@@ -7,7 +7,8 @@ A responsive React-based dashboard tailored for Training & Placement (TNP) teams
 ## 📸 Project Preview
 
 > _Insert screenshot or live demo preview here_  
-> ![Screenshot](./path-to-your-screenshot.png)
+> ![Screenshot](![image](https://github.com/user-attachments/assets/48923a31-a8ac-424a-b101-c099e3988b96)
+)
 
 ---
 
